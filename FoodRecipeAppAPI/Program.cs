@@ -1,5 +1,6 @@
 using FoodRecipeAppAPI.Data;
 using FoodRecipeAppAPI.Data.Repositories;
+using FoodRecipeAppAPI.Data.Repositories.Recipes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<ICategoriesRepository, CategoriesRepository>();
+builder.Services.AddTransient<IRecipesRepository, RecipesRepository>();
+
 builder.Services.AddDbContext<RecipeAppDbContext>();
 
 var app = builder.Build();

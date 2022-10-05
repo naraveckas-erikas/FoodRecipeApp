@@ -16,16 +16,16 @@ namespace FoodRecipeAppAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CategoryDto>> GetAll()
+        public async Task<IEnumerable<CategoryDto>> GetAllAsync()
         {
             var categories = await _categoriesRepository.GetAllAsync();
 
-            return categories.Select(c => new CategoryDto { Name = c.Name, Description = c.Description, CreationDate = c.CreationDate });
+            return categories.Select(c => new CategoryDto { Id = c.Id, Name = c.Name, Description = c.Description, CreationDate = c.CreationDate });
         }
 
         [HttpGet]
         [Route("{categoryId}")]
-        public async Task<ActionResult<CategoryDto>> Get(int categoryId)
+        public async Task<ActionResult<CategoryDto>> GetAsync(int categoryId)
         {
             var category = await _categoriesRepository.GetAsync(categoryId);
 
@@ -34,11 +34,11 @@ namespace FoodRecipeAppAPI.Controllers
                 return NotFound();
             }
 
-            return new CategoryDto { Name = category.Name, Description = category.Description, CreationDate = category.CreationDate };
+            return new CategoryDto { Id = category.Id, Name = category.Name, Description = category.Description, CreationDate = category.CreationDate };
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDto>> Create(CreateCategoryDto dto)
+        public async Task<ActionResult<CategoryDto>> CreateAsync(CreateCategoryDto dto)
         {
             var category = new Category
             {
@@ -47,12 +47,12 @@ namespace FoodRecipeAppAPI.Controllers
 
             await _categoriesRepository.CreateAsync(category);
 
-            return Created("", new CategoryDto { Name = category.Name, Description = category.Description, CreationDate = category.CreationDate });
+            return Created("", new CategoryDto { Id = category.Id, Name = category.Name, Description = category.Description, CreationDate = category.CreationDate });
         }
 
         [HttpPut]
         [Route("{categoryId}")]
-        public async Task<ActionResult<CategoryDto>> Update(int categoryId, UpdateCategoryDto dto)
+        public async Task<ActionResult<CategoryDto>> UpdateAsync(int categoryId, UpdateCategoryDto dto)
         {
             var category = await _categoriesRepository.GetAsync(categoryId);
 
@@ -64,12 +64,12 @@ namespace FoodRecipeAppAPI.Controllers
             category.Description = dto.Description;
             await _categoriesRepository.UpdateAsync(category);
 
-            return Ok(new CategoryDto { Name = category.Name, Description = category.Description, CreationDate = category.CreationDate });
+            return Ok(new CategoryDto { Id = category.Id, Name = category.Name, Description = category.Description, CreationDate = category.CreationDate });
         }
 
         [HttpDelete]
         [Route("{categoryId}")]
-        public async Task<ActionResult> Remove(int categoryId)
+        public async Task<ActionResult> DeleteAsync(int categoryId)
         {
             var category = await _categoriesRepository.GetAsync(categoryId);
 
