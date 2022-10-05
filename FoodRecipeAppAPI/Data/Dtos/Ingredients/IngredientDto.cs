@@ -1,12 +1,11 @@
-﻿namespace FoodRecipeAppAPI.Data.Entities
+﻿namespace FoodRecipeAppAPI.Data.Dtos.Ingredients
 {
-    public class Ingredient
+    public class IngredientDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public bool IsVegetarian { get; set; }
         public bool IsVegan { get; set; }
-        public Recipe Recipe { get; set; }
     }
 }

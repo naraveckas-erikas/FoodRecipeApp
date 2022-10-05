@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodRecipeAppAPI.Controllers
 {
-    [Route("api/v1/{categoryId}/[controller]")]
+    [Route("api/v1/categories/{categoryId}/recipes")]
     [ApiController]
     public class RecipesController : ControllerBase
     {
