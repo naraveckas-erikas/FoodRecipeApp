@@ -23,18 +23,32 @@ namespace FoodRecipeAppAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<IngredientDto>> GetAllAsync(int recipeId)
+        public async Task<ActionResult<IEnumerable<IngredientDto>>> GetAllAsync(int categoryId, int recipeId)
         {
+            var category = await _categoriesRepository.GetAsync(categoryId);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var recipe = await _recipesRepository.GetAsync(recipeId);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
             var ingredients = await _ingredientsRepository.GetAllAsync(recipeId);
 
-            return ingredients.Select(i => new IngredientDto
+            return Ok(ingredients.Select(i => new IngredientDto
             {
                 Id = i.Id,
                 Name = i.Name,
                 Type = i.Type,
                 IsVegetarian = i.IsVegetarian,
                 IsVegan = i.IsVegan
-            });
+            }));
         }
 
         [HttpGet]

@@ -20,11 +20,18 @@ namespace FoodRecipeAppAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<RecipeDto>> GetAllAsync(int categoryId)
+        public async Task<ActionResult<IEnumerable<RecipeDto>>> GetAllAsync(int categoryId)
         {
+            var category = await _categoriesRepository.GetAsync(categoryId);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
             var recipes = await _recipesRepository.GetAllAsync(categoryId);
 
-            return recipes
+            return Ok(recipes
                 .Select(r => new RecipeDto
                 {
                     Id = r.Id,
@@ -36,7 +43,7 @@ namespace FoodRecipeAppAPI.Controllers
                     PortionsCount = r.PortionsCount,
                     IsVegetarian = r.IsVegetarian,
                     IsVegan = r.IsVegan,
-                });
+                }));
         }
 
         [HttpGet]
