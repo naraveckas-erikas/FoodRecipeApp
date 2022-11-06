@@ -1,7 +1,10 @@
-﻿using FoodRecipeAppAPI.Data.Dtos.Categories;
+﻿using FoodRecipeAppAPI.Auth.Models;
+using FoodRecipeAppAPI.Data.Dtos.Categories;
 using FoodRecipeAppAPI.Data.Entities;
 using FoodRecipeAppAPI.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace FoodRecipeAppAPI.Controllers
 {
@@ -10,9 +13,12 @@ namespace FoodRecipeAppAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoriesRepository _categoriesRepository;
-        public CategoriesController(ICategoriesRepository categoriesRepository)
+        private readonly IAuthorizationService _authorizationService;
+
+        public CategoriesController(ICategoriesRepository categoriesRepository, IAuthorizationService authorizationService)
         {
             _categoriesRepository = categoriesRepository;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -38,11 +44,15 @@ namespace FoodRecipeAppAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = AppRoles.User)]
         public async Task<ActionResult<CategoryDto>> CreateAsync(CreateCategoryDto dto)
         {
             var category = new Category
             {
-                Name = dto.Name, Description = dto.Description, CreationDate = DateTime.UtcNow
+                Name = dto.Name,
+                Description = dto.Description,
+                CreationDate = DateTime.UtcNow,
+                UserId = User.FindFirst(JwtRegisteredClaimNames.Sub).Value
             };
 
             await _categoriesRepository.CreateAsync(category);
@@ -52,6 +62,7 @@ namespace FoodRecipeAppAPI.Controllers
 
         [HttpPut]
         [Route("{categoryId}")]
+        [Authorize(Roles = AppRoles.User)]
         public async Task<ActionResult<CategoryDto>> UpdateAsync(int categoryId, UpdateCategoryDto dto)
         {
             var category = await _categoriesRepository.GetAsync(categoryId);
@@ -59,6 +70,13 @@ namespace FoodRecipeAppAPI.Controllers
             if (category == null)
             {
                 return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, category, PolicyNames.ResourceOwner);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
 
             category.Description = dto.Description;
@@ -69,6 +87,7 @@ namespace FoodRecipeAppAPI.Controllers
 
         [HttpDelete]
         [Route("{categoryId}")]
+        [Authorize(Roles = AppRoles.User)]
         public async Task<ActionResult> DeleteAsync(int categoryId)
         {
             var category = await _categoriesRepository.GetAsync(categoryId);
@@ -76,6 +95,13 @@ namespace FoodRecipeAppAPI.Controllers
             if (category == null)
             {
                 return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, category, PolicyNames.ResourceOwner);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
 
             await _categoriesRepository.DeleteAsync(category);

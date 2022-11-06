@@ -1,4 +1,7 @@
-﻿namespace FoodRecipeAppAPI.Data.Entities
+﻿using FoodRecipeAppAPI.Auth.Models;
+using System.ComponentModel.DataAnnotations;
+
+namespace FoodRecipeAppAPI.Data.Entities
 {
     public class Recipe
     {
@@ -12,5 +15,7 @@
         public bool IsVegetarian { get; set; }
         public bool IsVegan { get; set; }
         public Category Category { get; set; }
+        public string? UserId { get; set; }
+        public User User { get; set; }
     }
 }
