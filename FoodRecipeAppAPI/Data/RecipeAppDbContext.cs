@@ -11,9 +11,9 @@ namespace FoodRecipeAppAPI.Data
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public RecipeAppDbContext(DbContextOptions<RecipeAppDbContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=FoodRecipeAppDb");
+
         }
     }
 }

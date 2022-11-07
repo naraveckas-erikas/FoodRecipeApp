@@ -7,6 +7,7 @@ using FoodRecipeAppAPI.Data.Repositories.Recipes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -20,7 +21,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<RecipeAppDbContext>();
+builder.Services.AddDbContext<RecipeAppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration["ConnectionString"]);
+});
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<RecipeAppDbContext>()
