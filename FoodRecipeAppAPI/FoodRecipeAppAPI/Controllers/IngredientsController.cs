@@ -102,25 +102,11 @@ namespace FoodRecipeAppAPI.Controllers
                 return NotFound();
             }
 
-            var categoryAuthorizationResult = await _authorizationService.AuthorizeAsync(User, category, PolicyNames.ResourceOwner);
-
-            if (!categoryAuthorizationResult.Succeeded)
-            {
-                return Forbid();
-            }
-
             var recipe = await _recipesRepository.GetAsync(recipeId);
 
             if (recipe == null) 
             {
                 return NotFound();
-            }
-
-            var recipeAuthorizationResult = await _authorizationService.AuthorizeAsync(User, recipe, PolicyNames.ResourceOwner);
-
-            if (!recipeAuthorizationResult.Succeeded)
-            {
-                return Forbid();
             }
 
             var ingredient = new Ingredient
